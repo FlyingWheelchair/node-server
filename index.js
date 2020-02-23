@@ -1,6 +1,8 @@
 // content of index.js
 const http = require('http');
 const request = require('request');
+const json2xml = require('./xml/json2xml');
+const xml2json = require('./xml/xml2json');
 const port = 3000;
 
 const xml = `<?xml version="1.0" encoding="UTF-8"?>
@@ -91,10 +93,10 @@ const options = {
 
 const requestHandler = (req, res) => {
     request.post(options, xml, function (error, response, body) {
+        parsedResponse = xml2json.parse(body);
         console.error('error:', error); // Print the error if one occurred
         console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
-        console.log('body:', body); // Print the HTML for the Google homepage.
-        res.end(body);
+        res.end(parsedResponse);
     });
 
 }

@@ -1,6 +1,7 @@
 {
   "dependencies": {
-    "request": "^2.88.2"
+    "request": "^2.88.2",
+    "xmldom": "^0.2.1"
   },
   "license": "UNLICENSED"
 }
