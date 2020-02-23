@@ -1,5 +1,5 @@
 // content of index.js
-const http = require('http');
+const express = require('express');
 const request = require('request');
 const json2xml = require('./xml/json2xml');
 const xml2json = require('./xml/xml2json');
@@ -101,7 +101,7 @@ const requestHandler = (req, res) => {
 
 }
 
-const server = http.createServer(requestHandler);
+const server = express();
 
 server.listen(port, (err) => {
     if (err) {
@@ -109,3 +109,6 @@ server.listen(port, (err) => {
     }
     console.log(`server is listening on ${port}`);
 })
+
+server.get('/', function(req, res) {  res.end('Hello World!');});
+server.get('/about', function(req, res) {  res.end('About!');});
