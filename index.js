@@ -91,16 +91,6 @@ const options = {
     body: xml,
 };
 
-const requestHandler = (req, res) => {
-    request.post(options, xml, function (error, response, body) {
-        parsedResponse = xml2json.parse(body);
-        console.error('error:', error); // Print the error if one occurred
-        console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
-        res.end(parsedResponse);
-    });
-
-}
-
 const server = express();
 
 server.listen(port, (err) => {
@@ -112,3 +102,21 @@ server.listen(port, (err) => {
 
 server.get('/', function(req, res) {  res.end('Hello World!');});
 server.get('/about', function(req, res) {  res.end('About!');});
+server.post('/AirShoppingRQ', function(req, res) { 
+    /*
+    Expecting request body to look like:
+    {
+        "origin_code": "LHR",
+        "destination_code": "BCN",
+        "date": "2020-06-20",
+        "pax_adt": 1,
+        "pax_chd": 1
+    }
+    */
+   request.post(options, xml, function (error, response, body) {
+        parsedResponse = xml2json.parse(body);
+        console.error('error:', error); // Print the error if one occurred
+        console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
+        res.end(parsedResponse);
+    });
+});
