@@ -119,7 +119,6 @@ server.post('/OfferPriceRQ', function(req, res) {
         "offer_ref_id": "OFFER1",
         "offer_item_ref_id": "OFFERITEM1_1",
         "shopping_response_ref_id": "201-2854d1876cd343c9aa78bb60b2afd4a",
-        "special_service_code": "WCHS",
         "pax_list": [
             {
                 "given_name": "John",
@@ -145,6 +144,7 @@ server.post('/OfferPriceRQ', function(req, res) {
 });
 
 function generateNdcOfferPriceXmlRequest(data) {
+    data.special_service_code = "WCHS";
     return `<?xml version="1.0" encoding="UTF-8"?>
     <IATA_OfferPriceRQ xmlns="http://www.iata.org/IATA/2015/00/2019.2/IATA_OfferPriceRQ">
         <MessageDoc>
@@ -212,4 +212,118 @@ function generateNdcOfferPriceXmlRequest(data) {
              </ShoppingCriteria>		
         </Request>
     </IATA_OfferPriceRQ>`;
+}
+
+server.post('/OrderCreateRQ', function(req, res) { 
+    /*
+    Mocked.
+    */
+   res.end("OK");
+});
+
+function generateOrderCreateXmlRequest(data) {
+    return `<?xml version="1.0" encoding="UTF-8"?>
+    <IATA_OrderCreateRQ xmlns="http://www.iata.org/IATA/2015/00/2019.2/IATA_OrderCreateRQ" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <MessageDoc>
+                <RefVersionNumber>1.0</RefVersionNumber>
+        </MessageDoc>
+        <Party>
+            <Participant>
+                <Aggregator>
+                    <AggregatorID>88888888</AggregatorID>
+                    <Name>JR TECHNOLOGIES</Name>
+                </Aggregator>
+            </Participant>
+            <Sender>
+                <TravelAgency>
+                    <AgencyID>{{AGENCY_ID}}</AgencyID>
+                    <IATA_Number>12312312</IATA_Number>
+                    <Name>Gods Travel</Name>
+                </TravelAgency>
+            </Sender>
+        </Party>
+        <POS>
+            <City>
+                <IATA_LocationCode>ATH</IATA_LocationCode>
+            </City>
+            <Country>
+                <CountryCode>GR</CountryCode>
+            </Country>
+            <RequestTime>2018-10-12T07:38:00</RequestTime>
+        </POS>
+        <Request>
+            <CreateOrder>
+                <SelectedOffer>
+                    <OfferRefID>OFFER1</OfferRefID>
+                    <OwnerCode>9A</OwnerCode>
+                    <SelectedOfferItem>
+                        <OfferItemRefID>OFFERITEM1_1</OfferItemRefID>
+                        <PaxRefID>Pax1</PaxRefID>
+                    </SelectedOfferItem>
+                    <ShoppingResponseRefID>${data.shopping_response_ref_id}</ShoppingResponseRefID>
+                </SelectedOffer>
+                <SelectedOffer>
+                    <OfferRefID>ALACARTEOFFER1</OfferRefID>
+                    <OwnerCode>9A</OwnerCode>
+                    <SelectedOfferItem>
+                        <OfferItemRefID>ALACARTEOFFERITEM9</OfferItemRefID>
+                        <PaxRefID>Pax1</PaxRefID>
+                        <SelectedBundleServices>
+                            <SelectedServiceDefinitionRefID>SV_3006_ERO</SelectedServiceDefinitionRefID>
+                            <SelectedServiceRefID/>
+                        </SelectedBundleServices>
+                    </SelectedOfferItem>
+                    <ShoppingResponseRefID>${data.shopping_response_ref_id}</ShoppingResponseRefID>
+                </SelectedOffer>
+            </CreateOrder>
+            <DataLists>
+                <ContactInfoList>
+                    <ContactInfo>
+                        <ContactInfoID>Pax1_CNT</ContactInfoID>
+                        <EmailAddress>
+                            <EmailAddressText>j.smithas@mail.com</EmailAddressText>
+                        </EmailAddress>
+                    </ContactInfo>
+                </ContactInfoList>
+                <PaxList>
+                    <Pax>
+                        <ContactInfoRefID>Pax1_CNT</ContactInfoRefID>
+                        <Individual>
+                            <GivenName>Johan</GivenName>
+                            <IndividualID>IND_Pax1</IndividualID>
+                            <Surname>Smithas</Surname>
+                            <TitleName>Mr</TitleName>
+                        </Individual>
+                        <LoyaltyProgramAccount>
+                            <AccountNumber>00034642464</AccountNumber>
+                            <LoyaltyProgram/>
+                        </LoyaltyProgramAccount>
+                        <PaxID>Pax1</PaxID>
+                        <PTC>ADT</PTC>
+                    </Pax>
+                </PaxList>
+                <ServiceDefinitionList>
+                    <ServiceDefinition>
+                        <Desc/>
+                        <Name> </Name>
+                        <ServiceDefinitionID>SV_1024_ERO</ServiceDefinitionID>
+                        <SpecialService>
+                            <FreeText>{"totalLinear": {"value": 4,"uom": "m"},"weight": {"value": 32.5,"uom": "kg"}, "freeText": "test text"}</FreeText>
+                            <Qty>1</Qty>
+                            <SpecialServiceCode>WCHS</SpecialServiceCode>
+                        </SpecialService>
+                    </ServiceDefinition>
+                </ServiceDefinitionList>
+            </DataLists>
+            <PaymentFunctions>
+                <PaymentProcessingDetails>
+                    <Amount CurCode="USD">${data.price}</Amount>
+                    <PaymentMethod>
+                        <Cash/>
+                    </PaymentMethod>
+                    <TypeCode>CA</TypeCode>
+                </PaymentProcessingDetails>
+            </PaymentFunctions>
+        </Request>
+    </IATA_OrderCreateRQ>`;
 }
