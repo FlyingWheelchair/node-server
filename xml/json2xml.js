@@ -6,16 +6,9 @@ var json = {};
 var xml = '';
 var debug = false; // display debug messages for sequences
 
-if (process.argv.length != 4) {
-	printUsage();
-	return -1;
-}
-var args = process.argv.slice(2);
-
-
 function parse(data) {
 	try {
-		json = JSON.parseNode(data);
+		json = JSON.parse(data);
 	} catch (err) {
 		console.error('Invalid JSON input\n' + err);
 		return -1;
@@ -25,7 +18,6 @@ function parse(data) {
 	parseNode(json[key], key, '');
 	return xml;
 }
-
 
 function parseNode(obj, key, xpath) {
 	// loop over array values
