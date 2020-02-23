@@ -110,3 +110,105 @@ function generateNdcAirShoppingXmlRequest(data) {
         </Request>
     </IATA_AirShoppingRQ>`;
 }
+
+server.post('/OfferPriceRQ', function(req, res) { 
+    /*
+    Expecting request body to look like:
+    {
+        "offer_ref_id": "OFFER1",
+        "offer_item_ref_id": "OFFERITEM1_1",
+        "shopping_response_ref_id": "201-2854d1876cd343c9aa78bb60b2afd4a",
+        "special_service_code": "WCHS",
+        "pax_list": [
+            {
+                "given_name": "John",
+                "surname": "Smiths",
+                "title_name": "Mr",
+                "ptc": "ADT"
+            }
+        ]
+    }
+    */
+    data = req.body;
+    const options = {
+        url: NDC_API_URL,
+        headers: HEADERS,
+        body: generateNdcOfferPriceXmlRequest(data),
+    };
+    request.post(options, function (error, response, body) {
+        parsedResponse = xml2json.parse(body);
+        console.error('error:', error); // Print the error if one occurred
+        console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
+        res.end(parsedResponse);
+    });
+});
+
+function generateNdcOfferPriceXmlRequest(data) {
+    return `<?xml version="1.0" encoding="UTF-8"?>
+    <IATA_OfferPriceRQ xmlns="http://www.iata.org/IATA/2015/00/2019.2/IATA_OfferPriceRQ">
+        <MessageDoc>
+                <RefVersionNumber>1.0</RefVersionNumber>
+        </MessageDoc>
+        <Party>
+            <Participant>
+                <Aggregator>
+                    <AggregatorID>88888888</AggregatorID>
+                    <Name>JR TECHNOLOGIES</Name>
+                </Aggregator>
+            </Participant>
+            <Sender>
+                <TravelAgency>
+                    <AgencyID>9A</AgencyID>
+                    <IATA_Number>12312312</IATA_Number>
+                    <Name>Gods Travel</Name>
+                </TravelAgency>
+            </Sender>
+        </Party>
+        <POS>
+            <City>
+                <IATA_LocationCode>ATH</IATA_LocationCode>
+            </City>
+            <Country>
+                <CountryCode>GR</CountryCode>
+            </Country>
+            <RequestTime>2018-10-12T07:38:00</RequestTime>
+        </POS>
+        <Request>
+            <DataLists>
+                <PaxList>
+                    <Pax>
+                        <Individual>
+                            <GivenName>${data.pax_list[0].given_name}</GivenName>
+                            <Surname>${data.pax_list[0].surname}</Surname>
+                            <TitleName>${data.pax_list[0].title_name}</TitleName>
+                        </Individual>
+                        <LoyaltyProgramAccount>
+                            <AccountNumber>1234525525</AccountNumber>
+                        </LoyaltyProgramAccount>
+                        <PaxID>Pax1</PaxID>
+                        <PTC>${data.pax_list[0].ptc}</PTC>
+                    </Pax>
+                </PaxList>
+            </DataLists>
+            <PricedOffer>
+                <SelectedOffer>
+                    <OfferRefID>${data.offer_ref_id}</OfferRefID>
+                    <OwnerCode>9A</OwnerCode>
+                    <SelectedOfferItem>
+                        <OfferItemRefID>${data.offer_item_ref_id}</OfferItemRefID>
+                        <PaxRefID>Pax1</PaxRefID>
+                    </SelectedOfferItem>
+                    <ShoppingResponseRefID>${data.shopping_response_ref_id}</ShoppingResponseRefID>
+                </SelectedOffer>
+            </PricedOffer>
+             <ShoppingCriteria>
+                 <CabinTypeCriteria>
+                     <CabinTypeCode>M</CabinTypeCode>
+                 </CabinTypeCriteria>
+                 <SpecialNeedsCriteria>
+                    <SpecialServiceCode>${data.special_service_code}</SpecialServiceCode>
+                 </SpecialNeedsCriteria>
+             </ShoppingCriteria>		
+        </Request>
+    </IATA_OfferPriceRQ>`;
+}
