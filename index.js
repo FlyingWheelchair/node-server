@@ -1,5 +1,6 @@
 // content of index.js
 const express = require('express');
+const bodyParser = require('body-parser');
 const request = require('request');
 const json2xml = require('./xml/json2xml');
 const xml2json = require('./xml/xml2json');
@@ -92,6 +93,7 @@ const options = {
 };
 
 const server = express();
+server.use(bodyParser.json());
 
 server.listen(port, (err) => {
     if (err) {
@@ -113,6 +115,7 @@ server.post('/AirShoppingRQ', function(req, res) {
         "pax_chd": 1
     }
     */
+   console.log(req.body);
    request.post(options, xml, function (error, response, body) {
         parsedResponse = xml2json.parse(body);
         console.error('error:', error); // Print the error if one occurred
