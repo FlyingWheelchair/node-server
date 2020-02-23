@@ -24,9 +24,7 @@ function parse(data) {
 	json = '{"' + root.nodeName + '":';
 	parseNode(root, root.nodeName+'/');
 	json += '}';
-	// beautify JSON
-	json = JSON.stringify(JSON.parse(json), null, '\t');
-	return json;
+	return JSON.parse(json);
 }
 
 function getFirstElementNode(nodes) {
